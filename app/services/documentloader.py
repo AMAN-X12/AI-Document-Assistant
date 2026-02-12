@@ -36,6 +36,7 @@ def pdf_reader(file_path,file_name):
         #     ocr_text = pytesseract.image_to_string(img)
         #     if ocr_text.strip():
         #      doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
+        
     return doc
 
 
