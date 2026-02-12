@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+venv/
+beauty_faqs.txt
+agent copy.py
+.venv/
