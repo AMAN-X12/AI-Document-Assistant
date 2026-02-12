@@ -38,7 +38,8 @@
 
 from fastapi import FastAPI
 from app.api.routes import router
-
+import uvicorn
+import os
 app = FastAPI(title=" End-to-End RAG AI Assistant", description="An AI assistant that can answer questions based on uploaded documents.")
 app.include_router(router)
 
@@ -46,3 +47,8 @@ app.include_router(router)
 @app.get("/status")
 async def get_status():
     return {"status": "API is running successfully."}
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
