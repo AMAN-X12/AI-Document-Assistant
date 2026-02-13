@@ -20,7 +20,4 @@ async def ask(request: QuestionRequest):
     response = await ask_question(request.question)
     return {"response": response}
 
-@router.get("/healthz")
-async def get_status():
-    return {"status": "API is running successfully."}
 

@@ -43,3 +43,7 @@ app = FastAPI(title=" End-to-End RAG AI Assistant", description="An AI assistant
 app.include_router(router)
 
 
+
+@app.get("/healthz") 
+async def health_check():
+    return {"status": "ok"}
