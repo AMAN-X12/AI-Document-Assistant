@@ -9,7 +9,7 @@ from PIL import Image
 from langchain_core.documents import Document
 
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe' 
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
 
@@ -23,21 +23,21 @@ def clean_text(text:str):
     text=re.sub(r'\s+'," ",text)
     return text.strip()
 
-def pdf_reader(file_path,file_name):
-    doc=[]
-    pdf = fitz.open(file_path)
-    for page_num, page in enumerate(pdf):
-        text = page.get_text().strip()
-        if text:
-            doc.append(Document(page_content=clean_text(text), metadata={"file_name":file_name, "page_number": page_num, "source":"text"}))
-        else:
-            pix = page.get_pixmap(dpi=300)
-            img = Image.open(io.BytesIO(pix.tobytes("png")))
-            ocr_text = pytesseract.image_to_string(img)
-            if ocr_text.strip():
-             doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
+# def pdf_reader(file_path,file_name):
+#     doc=[]
+#     pdf = fitz.open(file_path)
+#     for page_num, page in enumerate(pdf):
+#         text = page.get_text().strip()
+#         if text:
+#             doc.append(Document(page_content=clean_text(text), metadata={"file_name":file_name, "page_number": page_num, "source":"text"}))
+#         else:
+#             pix = page.get_pixmap(dpi=300)
+#             img = Image.open(io.BytesIO(pix.tobytes("png")))
+#             ocr_text = pytesseract.image_to_string(img)
+#             if ocr_text.strip():
+#              doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
 
-    return doc
+#     return doc
 
 
 
