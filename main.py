@@ -34,6 +34,7 @@
 #     print("oops can't proceed now : ", str(e))
 
 
+#localized version works on the laptop
 
 
 from fastapi import FastAPI
@@ -44,6 +45,6 @@ app.include_router(router)
 
 
 
-@app.get("/healthz") 
+@app.get("/healthz")
 async def health_check():
     return {"status": "ok"}
