@@ -3,13 +3,13 @@ import re
 from pathlib import Path
 import tempfile
 import fitz
-# import pytesseract
-# import io
-# from PIL import Image
+import pytesseract
+import io
+from PIL import Image
 from langchain_core.documents import Document
 
 
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe' //for on testing phase
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe' 
 
 
 
@@ -30,13 +30,13 @@ def pdf_reader(file_path,file_name):
         text = page.get_text().strip()
         if text:
             doc.append(Document(page_content=clean_text(text), metadata={"file_name":file_name, "page_number": page_num, "source":"text"}))
-        # else:
-        #     pix = page.get_pixmap(dpi=300)
-        #     img = Image.open(io.BytesIO(pix.tobytes("png")))
-        #     ocr_text = pytesseract.image_to_string(img)
-        #     if ocr_text.strip():
-        #      doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
-        
+        else:
+            pix = page.get_pixmap(dpi=300)
+            img = Image.open(io.BytesIO(pix.tobytes("png")))
+            ocr_text = pytesseract.image_to_string(img)
+            if ocr_text.strip():
+             doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
+
     return doc
 
 
