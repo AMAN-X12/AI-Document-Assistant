@@ -12,3 +12,6 @@ llm_config  ={
     "top_p": 0.95,
     "top_k": 40,
 }
+
+
+creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON")

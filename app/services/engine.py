@@ -1,29 +1,50 @@
 
 from app.services.documentloader import load_document
-from app.services.vectorstore import create_vectorstore
 from app.services.chain import chain
 from app.services.memory import add_messages
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from app.services.embeddings import get_embeddings
+import numpy as np
 
 
-
-
-vectorstore=None
-qa_chain=None
+document=[]
+embeddings=[]
+qa_chain = None
 
 try:
 
   async def process_upload(uploaded_file):
-      global vectorstore,qa_chain
+      global document, embeddings
+
       docs = await load_document(uploaded_file)
-      vectorstore=create_vectorstore(docs)
-      retriever=vectorstore.as_retriever(search_kwargs={"k": 4})
-      qa_chain= chain(retriever)
+
+      text_splitter= await RecursiveCharacterTextSplitter(chunk_size=1200, chunk_overlap=250)
+      chunks=text_splitter.split_documents(docs)
+
+      document=[]
+      embeddings=[]
+
+      for chunk in chunks:
+          document.append(chunk)
+          embeddings.append(get_embeddings(chunk.page_content))
 
 
   async def ask_question(question):
-        if qa_chain is None:
+        if not document:
             raise Exception("Document not uploaded. Please upload a document first.")
         try:
+           question_embedding = get_embeddings(question)
+           similarities=[]
+
+
+           for emb in embeddings:
+               sim=np.dot(question_embedding, emb) / (np.linalg.norm(question_embedding) * np.linalg.norm(emb))
+               similarities.append(sim)
+
+           top_k_indices = np.argsort(similarities)[-4:][::-1]
+           relevant_chunks = [document[i] for i in top_k_indices]
+           context=" ".join([chunk.page_content for chunk in relevant_chunks])
+           qa_chain = chain(context)
            response = await qa_chain.ainvoke(question)
         except Exception :
            raise  Exception("make sure you are connected to the internet")

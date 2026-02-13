@@ -8,10 +8,10 @@ from app.services.memory import get_history
 from app.services.documentloader import format_docs
 
 
-def chain(retriever):
+def chain(context):
     prompt = get_prompt()
     qa_chain = (
-        {"context": retriever | format_docs,
+        {"context": context ,
         "question": RunnablePassthrough(),
         "chat_history": lambda _: get_history(llm)
         }
