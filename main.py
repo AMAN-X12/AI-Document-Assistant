@@ -44,11 +44,6 @@ app = FastAPI(title=" End-to-End RAG AI Assistant", description="An AI assistant
 app.include_router(router)
 
 
-@app.get("/status")
-async def get_status():
-    return {"status": "API is running successfully."}
-
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
