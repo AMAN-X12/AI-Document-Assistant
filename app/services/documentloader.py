@@ -4,7 +4,6 @@ from pathlib import Path
 import tempfile
 import fitz
 from langchain_core.documents import Document
-from PIL import Image
 import json
 from google.cloud import vision
 import io
@@ -26,7 +25,7 @@ def get_vision_client():
 
 
 def extract_text_from_image(image_bytes):
-    client = get_vision_client
+    client = get_vision_client()
 
     image = vision.Image(content=image_bytes)
 
@@ -53,8 +52,8 @@ def pdf_reader(file_path,file_name):
             doc.append(Document(page_content=clean_text(text), metadata={"file_name":file_name, "page_number": page_num, "source":"text"}))
         else:
             pix = page.get_pixmap(dpi=300)
-            img = Image.open(io.BytesIO(pix.tobytes("png")))
-            ocr_text = extract_text_from_image(img)
+            bytes=pix.tobytes("png")
+            ocr_text = extract_text_from_image(bytes)
             if ocr_text.strip():
              doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
 
