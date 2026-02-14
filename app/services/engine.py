@@ -18,7 +18,7 @@ try:
 
       docs = await load_document(uploaded_file)
 
-      text_splitter= await RecursiveCharacterTextSplitter(chunk_size=1200, chunk_overlap=250)
+      text_splitter=  RecursiveCharacterTextSplitter(chunk_size=1200, chunk_overlap=250)
       chunks=text_splitter.split_documents(docs)
 
       document=[]
@@ -44,8 +44,11 @@ try:
            top_k_indices = np.argsort(similarities)[-4:][::-1]
            relevant_chunks = [document[i] for i in top_k_indices]
            context=" ".join([chunk.page_content for chunk in relevant_chunks])
-           qa_chain = chain(context)
-           response = await qa_chain.ainvoke(question)
+           qa_chain = chain()
+           response = await qa_chain.ainvoke({
+               "context":context,
+               "question":question
+           })
         except Exception :
            raise  Exception("make sure you are connected to the internet")
         add_messages(question, response)

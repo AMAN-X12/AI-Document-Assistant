@@ -4,43 +4,16 @@ from pathlib import Path
 import tempfile
 import fitz
 from langchain_core.documents import Document
-import json
-from google.cloud import vision
-import io
-from app.core.config import creds_json
-from google.oauth2 import service_account
 
 
 
-def get_vision_client():
-
-    if not creds_json:
-        raise ValueError("Google credentials not found in environment variables.")
-
-    credentials = service_account.Credentials.from_service_account_info(
-        json.loads(creds_json)
-    )
-
-    return vision.ImageAnnotatorClient(credentials=credentials)
-
-
-def extract_text_from_image(image_bytes):
-    client = get_vision_client()
-
-    image = vision.Image(content=image_bytes)
-
-    response = client.text_detection(image=image)
-    texts = response.text_annotations
-
-    if texts:
-        return texts[0].description
-    return ""
 
 
 def clean_text(text:str):
     text=re.sub(r'(\w+)-\s*\n\s*(\w+)', r'\1\2', text)
     text=re.sub(r'\s+'," ",text)
     return text.strip()
+
 
 def pdf_reader(file_path,file_name):
     doc=[]
@@ -50,13 +23,8 @@ def pdf_reader(file_path,file_name):
         text = page.get_text().strip()
         if text:
             doc.append(Document(page_content=clean_text(text), metadata={"file_name":file_name, "page_number": page_num, "source":"text"}))
-        else:
-            pix = page.get_pixmap(dpi=300)
-            bytes=pix.tobytes("png")
-            ocr_text = extract_text_from_image(bytes)
-            if ocr_text.strip():
-             doc.append(Document(page_content=clean_text(ocr_text), metadata={"source": "ocr", "file_name": file_name, "page_number": page_num}))
 
+    pdf.close()
     return doc
 
 
@@ -80,6 +48,8 @@ async def load_document(document):
             return documents
         elif file_suffix == '.pdf':
             documents = pdf_reader(temp_file_path, file_name)
+            if not documents:
+                raise ValueError("doesn't read scanned images .")
             return documents
         else:
             raise ValueError(f"Unsupported file type: {file_suffix}")

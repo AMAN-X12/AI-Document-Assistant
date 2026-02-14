@@ -8,10 +8,8 @@ key=os.getenv("key")
 modelid="gemini-2.5-flash"
 llm_config  ={
     "temperature": 0.5,
-    "max_output_tokens": 700,
+    "max_output_tokens": 1200,
     "top_p": 0.95,
     "top_k": 40,
 }
 
-
-creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
