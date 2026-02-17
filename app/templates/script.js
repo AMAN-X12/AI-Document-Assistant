@@ -96,12 +96,20 @@ function addMessage(sender, text) {
     const chatBox = document.getElementById("chatBox");
 
     const messageDiv = document.createElement("div");
-    messageDiv.className = "message";
-    sen= document.createTextNode(sender);
-    messageDiv.innerHTML =formatResponse(text);
-    chatBox.appendChild(sen);
+    messageDiv.classList.add("message");
+
+    if (sender === "You") {
+        messageDiv.classList.add("user-message");
+    } else {
+        messageDiv.classList.add("assistant-message");
+    }
+
+    messageDiv.innerHTML = formatResponse(text);
+
     chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
+
 
 function showError(message) {
     const errorBox = document.getElementById("errorBox");

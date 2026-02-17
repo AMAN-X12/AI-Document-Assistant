@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>PDF Assistant</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
 
-<div class="container">
-    <h1>PDF Assistant</h1>
+<div class="app-container">
 
+    <h1 class="app-title">PDF Assistant</h1>
 
+    <!-- Upload Section -->
     <div class="upload-section">
-        <input type="file" id="fileInput" accept=".pdf">
-        <button id="uploadBtn">Upload PDF</button>
-        <div id="uploadStatus" class="status"></div>
+        <input type="file" id="fileInput">
+        <button id="uploadBtn">Upload</button>
     </div>
 
+    <div id="uploadStatus" class="status-text"></div>
 
-    <div class="chat-section" id="chatSection">
-        <input type="text" id="questionInput" placeholder="Ask a question...">
-        <button id="askBtn">Ask Question</button>
-    </div>
+    <div id="errorBox" class="error-box"></div>
 
     <div id="loading" class="loading">Processing...</div>
 
-    <div id="chatBox" class="chat-box"></div>
+    <div id="chatSection" class="chat-section">
 
-    <div id="errorBox" class="error"></div>
+        <div id="chatBox" class="chat-container"></div>
+
+        <div class="input-section">
+            <input type="text" id="questionInput" placeholder="Ask anything about the document...">
+            <button id="askBtn">Send</button>
+        </div>
+
+    </div>
+
 </div>
 
 <script src="/static/script.js"></script>
-
 </body>
 </html>
