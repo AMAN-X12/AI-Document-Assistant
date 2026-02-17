@@ -5,8 +5,7 @@ from app.services.memory import add_messages
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.services.embeddings import get_embeddings
 import numpy as np
-
-
+from fastapi import HTTPException
 document=[]
 embeddings=[]
 qa_chain = None
@@ -17,6 +16,8 @@ try:
       global document, embeddings
 
       docs = await load_document(uploaded_file)
+      if not docs:
+       raise HTTPException(status_code=500, detail="Error processing PDF")
 
       text_splitter=  RecursiveCharacterTextSplitter(chunk_size=1200, chunk_overlap=250)
       chunks=text_splitter.split_documents(docs)

@@ -39,12 +39,19 @@
 
 from fastapi import FastAPI
 from app.api.routes import router
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pathlib import Path
+
 
 app = FastAPI(title=" End-to-End RAG AI Assistant", description="An AI assistant that can answer questions based on uploaded documents.")
 app.include_router(router)
 
 
-
+app.mount("/static",StaticFiles(directory="app/templates"),name="static")
+@app.get("/")
+async def initial():
+    return FileResponse(Path("app/templates/index.html"))
 @app.get("/healthz")
 async def health_check():
     return {"status": "ok"}

@@ -4,8 +4,7 @@ from pathlib import Path
 import tempfile
 import fitz
 from langchain_core.documents import Document
-
-
+from fastapi import HTTPException
 
 
 
@@ -18,12 +17,15 @@ def clean_text(text:str):
 def pdf_reader(file_path,file_name):
     doc=[]
     pdf = fitz.open(file_path)
-
+    flag=False
     for page_num, page in enumerate(pdf):
         text = page.get_text().strip()
         if text:
             doc.append(Document(page_content=clean_text(text), metadata={"file_name":file_name, "page_number": page_num, "source":"text"}))
-
+        else :
+            flag=True
+    if (flag):
+        raise HTTPException(status_code=500, detail="can't process with scanned images")
     pdf.close()
     return doc
 
@@ -49,10 +51,10 @@ async def load_document(document):
         elif file_suffix == '.pdf':
             documents = pdf_reader(temp_file_path, file_name)
             if not documents:
-                raise ValueError("doesn't read scanned images .")
+                raise HTTPException(status_code=500,detail="doesn't read scanned images .")
             return documents
         else:
-            raise ValueError(f"Unsupported file type: {file_suffix}")
+            raise HTTPException(f"Unsupported file type: {file_suffix}")
 
 
     finally:
